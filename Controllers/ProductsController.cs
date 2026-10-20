@@ -1,80 +1,102 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProductsApi.Exceptions;
 using ProductsApi.Models;
 
-namespace ProductsApi.Controllers
+namespace ProductsApi.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class ProductsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductsController : ControllerBase
+    private static readonly List<Product> Products = new();
+    private static int _nextId = 1;
+
+    [HttpGet]
+    public IActionResult GetAll(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
     {
-        private static readonly List<Product> products = new();
-        private static int nextId = 1;
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 100);
 
-        // GET: api/products
-        [HttpGet]
-        public ActionResult<IEnumerable<Product>> GetProducts()
+        var data = Products
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return Ok(new
         {
-            return Ok(products);
-        }
-
-        // GET: api/products/1
-        [HttpGet("{id}")]
-        public ActionResult<Product> GetProduct(int id)
-        {
-            var product = products.FirstOrDefault(p => p.Id == id);
-
-            if (product == null)
-                return NotFound();
-
-            return Ok(product);
-        }
-
-        // POST: api/products
-        [HttpPost]
-        public ActionResult<Product> CreateProduct(
-            CreateProductRequest request)
-        {
-            var product = new Product
+            data,
+            meta = new
             {
-                Id = nextId++,
-                Name = request.Name,
-                Price = request.Price
-            };
+                page,
+                pageSize,
+                totalCount = Products.Count,
+                totalPages = (int)Math.Ceiling(
+                    Products.Count / (double)pageSize)
+            }
+        });
+    }
 
-            products.Add(product);
+    [HttpGet("{id:int}")]
+    public IActionResult GetById(int id)
+    {
+        var product = Products.FirstOrDefault(p => p.Id == id);
 
-            return Ok(product);
-        }
+        if (product == null)
+            throw new NotFoundException(
+                $"Product with ID {id} was not found.");
 
-        // PUT: api/products/1
-        [HttpPut("{id}")]
-        public IActionResult UpdateProduct(
-            int id,
-            UpdateProductRequest request)
+        return Ok(product);
+    }
+
+    [HttpPost]
+    public IActionResult Create(CreateProductRequest request)
+    {
+        var product = new Product
         {
-            var product = products.FirstOrDefault(p => p.Id == id);
+            Id = _nextId++,
+            Name = request.Name,
+            Price = request.Price,
+            SalePrice = request.SalePrice
+        };
 
-            if (product == null)
-                return NotFound();
+        Products.Add(product);
 
-            product.Name = request.Name;
-            product.Price = request.Price;
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = product.Id },
+            product);
+    }
 
-            return Ok(product);
-        }
+    [HttpPut("{id:int}")]
+    public IActionResult Update(
+        int id, UpdateProductRequest request)
+    {
+        var product = Products.FirstOrDefault(p => p.Id == id);
 
-        // DELETE: api/products/1
-        [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
-        {
-            var product = products.FirstOrDefault(p => p.Id == id);
+        if (product == null)
+            throw new NotFoundException(
+                $"Product with ID {id} was not found.");
 
-            if (product == null)
-                return NotFound();
+        product.Name = request.Name;
+        product.Price = request.Price;
+        product.SalePrice = request.SalePrice;
 
-            products.Remove(product);
+        return Ok(product);
+    }
 
-            return NoContent();
-        }
+    [HttpDelete("{id:int}")]
+    public IActionResult Delete(int id)
+    {
+        var product = Products.FirstOrDefault(p => p.Id == id);
+
+        if (product == null)
+            throw new NotFoundException(
+                $"Product with ID {id} was not found.");
+
+        Products.Remove(product);
+
+        return NoContent();
     }
 }
