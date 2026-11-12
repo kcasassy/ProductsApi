@@ -189,28 +189,87 @@ input {
 #productForm {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0 20px;
+    column-gap: 24px;
+    row-gap: 8px;
 }
 
-    #productForm label:first-of-type,
-    #productForm input:first-of-type,
+    #productForm label:first-of-type {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+
+    #productForm input:first-of-type {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    #productForm label:nth-of-type(2) {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    #productForm input:nth-of-type(2) {
+        grid-column: 1;
+        grid-row: 4;
+    }
+
+    #productForm label:nth-of-type(3) {
+        grid-column: 2;
+        grid-row: 3;
+    }
+
+    #productForm input:nth-of-type(3) {
+        grid-column: 2;
+        grid-row: 4;
+    }
+
     #productForm button {
         grid-column: 1 / -1;
+        grid-row: 5;
+        width: 100%;
+        margin-top: 12px;
     }
 
     #productForm input {
-        margin-bottom: 18px;
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 12px;
     }
 
-    #productForm button {
-        margin-top: 5px;
+@media (max-width: 600px) {
+    #productForm {
+        grid-template-columns: 1fr;
     }
+
+        #productForm label,
+        #productForm input,
+        #productForm button {
+            grid-column: 1;
+            grid-row: auto;
+        }
+}
 
 #productMessage {
-    color: #c77b91;
-    font-size: 14px;
+    display: block;
+    background: #ffffff;
+    color: #9f6078;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    padding: 18px;
+    border: 1px solid #f2dce4;
+    border-radius: 10px;
     margin-bottom: 20px;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(220, 150, 170, 0.06);
 }
+
+    #productMessage:empty {
+        display: none;
+    }
 
 .product-list {
     display: grid;
@@ -279,7 +338,7 @@ input {
 
     #adminSection {
         padding: 20px;
-    }
+    }   
 
     #productForm {
         display: block;

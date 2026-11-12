@@ -53,6 +53,7 @@ authForm.addEventListener("submit", async (event) => {
         }
 
         if (currentMode === "register") {
+            authForm.reset();
             message.textContent = "Registration successful. You can now log in.";
             return;
         }
