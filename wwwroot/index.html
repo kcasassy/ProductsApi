@@ -1,0 +1,38 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink Products | Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container">
+        <section class="auth-card">
+            <h1>Pink Products</h1>
+            <p class="subtitle">Welcome to your product store</p>
+
+            <div class="tabs">
+                <button id="loginTab" class="active" type="button">Login</button>
+                <button id="registerTab" type="button">Register</button>
+            </div>
+
+            <form id="authForm">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+
+                <button class="submit-btn" type="submit" id="submitBtn">Login</button>
+            </form>
+
+            <p id="message"></p>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
+ 

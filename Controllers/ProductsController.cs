@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProductsApi.Exceptions;
 using ProductsApi.Models;
 
@@ -51,6 +53,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public IActionResult Create(CreateProductRequest request)
     {
         var product = new Product
@@ -70,6 +73,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Update(
         int id, UpdateProductRequest request)
     {
@@ -87,6 +91,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
         var product = Products.FirstOrDefault(p => p.Id == id);
